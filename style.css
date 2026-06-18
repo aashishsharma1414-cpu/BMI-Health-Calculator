@@ -1,0 +1,275 @@
+/* ============================================================
+   style.css — Custom CSS
+   Project  : BMI Health Calculator
+   Course   : CET138 Full Stack Development
+   Covers   : CSS Variables, Typography, Colours, Layout,
+              Animations, Component Styling
+   ============================================================ */
+
+/* ── Google Fonts import ── */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ────────────────────────────────────────
+   1. CSS CUSTOM PROPERTIES (variables)
+   Defines the entire colour palette once;
+   referenced everywhere with var(--name)
+   ──────────────────────────────────────── */
+:root {
+  --bg:      #0d1117;   /* page background    */
+  --surface: #161b22;   /* card / panel bg    */
+  --border:  #30363d;   /* subtle borders     */
+  --accent:  #58a6ff;   /* blue highlight     */
+  --green:   #3fb950;   /* healthy / normal   */
+  --yellow:  #d29922;   /* overweight warning */
+  --orange:  #db6d28;   /* obese class I      */
+  --red:     #f85149;   /* obese class II+    */
+  --text:    #e6edf3;   /* primary text       */
+  --muted:   #8b949e;   /* secondary text     */
+  --radius:  14px;      /* border radius      */
+}
+
+/* ────────────────────────────────────────
+   2. BASE / RESET
+   ──────────────────────────────────────── */
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* Heading font — applied to all headings */
+h1, h2, h3 {
+  font-family: 'Syne', sans-serif;
+}
+
+/* ────────────────────────────────────────
+   3. NAVBAR
+   Overrides Bootstrap's default navbar
+   ──────────────────────────────────────── */
+.navbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.navbar-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--accent) !important;
+}
+.nav-link       { color: var(--muted) !important; }
+.nav-link:hover { color: var(--text)  !important; }
+
+/* ────────────────────────────────────────
+   4. HERO / HEADER SECTION
+   ──────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 0 2.5rem;
+}
+.hero h1 {
+  /* clamp() = responsive font size */
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+}
+.hero p { color: var(--muted); max-width: 480px; }
+
+/* ────────────────────────────────────────
+   5. CARDS
+   ──────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+
+/* ────────────────────────────────────────
+   6. FORM CONTROLS
+   Override Bootstrap's default white forms
+   ──────────────────────────────────────── */
+.form-control,
+.form-select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+}
+.form-control:focus,
+.form-select:focus {
+  background: var(--bg);
+  border-color: var(--accent);
+  color: var(--text);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+}
+.form-label {
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+/* ────────────────────────────────────────
+   7. BUTTONS
+   ──────────────────────────────────────── */
+.btn-calc {
+  background: var(--accent);
+  color: #0d1117;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 2rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn-calc:hover  { opacity: 0.88; }
+.btn-calc:active { transform: scale(0.97); }
+
+.btn-reset {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-reset:hover { border-color: var(--text); color: var(--text); }
+
+/* ────────────────────────────────────────
+   8. RESULT BOX
+   Hidden by default; JS adds .show class
+   ──────────────────────────────────────── */
+#result-box {
+  display: none;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  background: var(--bg);
+  transition: border-color 0.4s;
+}
+#result-box.show {
+  display: block;
+  animation: fadeUp 0.35s ease;
+}
+
+#bmi-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+#bmi-label {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 4px;
+}
+#advice-text {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ────────────────────────────────────────
+   9. BMI CATEGORY COLOURS
+   Applied to #result-box by JavaScript
+   ──────────────────────────────────────── */
+.cat-underweight { color: var(--accent); border-color: var(--accent) !important; }
+.cat-normal      { color: var(--green);  border-color: var(--green)  !important; }
+.cat-overweight  { color: var(--yellow); border-color: var(--yellow) !important; }
+.cat-obese       { color: var(--red);    border-color: var(--red)    !important; }
+
+/* ────────────────────────────────────────
+   10. ANIMATED BMI SCALE BAR
+   ──────────────────────────────────────── */
+.scale-bar {
+  height: 10px;
+  border-radius: 99px;
+  position: relative;
+  margin: 0.75rem 0 0.25rem;
+  /* Multi-colour gradient: blue → green → yellow → red */
+  background: linear-gradient(to right,
+    var(--accent) 0%,    var(--accent) 18.5%,
+    var(--green)  18.5%, var(--green)  25%,
+    var(--yellow) 25%,   var(--yellow) 30%,
+    var(--red)    30%
+  );
+}
+.scale-marker {
+  position: absolute;
+  top: -5px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  border: 3px solid var(--bg);
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 3px white;
+  /* Smooth spring animation when JS changes left% */
+  transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+/* ────────────────────────────────────────
+   11. REFERENCE TABLE
+   ──────────────────────────────────────── */
+#reference {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.bmi-table { background: transparent !important; }
+.bmi-table td,
+.bmi-table th {
+  color: var(--text);
+  border-color: var(--border) !important;
+  font-size: 0.88rem;
+}
+.bmi-table thead th { color: var(--muted); font-weight: 500; }
+
+/* Table category cell colours */
+.col-underweight { color: var(--accent); }
+.col-normal      { color: var(--green);  }
+.col-overweight  { color: var(--yellow); }
+.col-obese1      { color: var(--orange); }
+.col-obese2      { color: var(--red);    }
+
+/* ────────────────────────────────────────
+   12. FOOTER
+   ──────────────────────────────────────── */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.82rem;
+  padding: 1.2rem 0;
+}
+
+/* ────────────────────────────────────────
+   13. UTILITY / MISC
+   ──────────────────────────────────────── */
+.tip-badge {
+  display: inline-block;
+  background: rgba(88, 166, 255, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(88, 166, 255, 0.25);
+  border-radius: 6px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+/* ────────────────────────────────────────
+   14. KEYFRAME ANIMATIONS
+   ──────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}

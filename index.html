@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMI Health Calculator</title>
+
+  <!-- 1. Bootstrap CSS (bootstrap.css) -->
+  <link rel="stylesheet" href="bootstrap.css" />
+
+  <!-- 2. Your Custom CSS (style.css) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════
+       NAVBAR  (Bootstrap component)
+  ════════════════════════════════ -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">⚕ HealthCalc</a>
+      <button class="navbar-toggler border-secondary" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto gap-2">
+          <li class="nav-item"><a class="nav-link" href="#calculator">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="#reference">Reference</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════
+       HEADER — semantic HTML tag
+  ════════════════════════════════ -->
+  <header class="hero" id="about">
+    <div class="container">
+      <h1>BMI Health Calculator</h1>
+      <p class="mt-2">
+        Enter your height and weight to instantly find your Body Mass Index,
+        which category you fall into, and what it means for your health.
+      </p>
+      <span class="tip-badge">🎓 HTML · CSS · Bootstrap · JavaScript</span>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════
+       MAIN — semantic HTML tag
+  ════════════════════════════════ -->
+  <main class="py-5" id="calculator">
+    <div class="container">
+
+      <!-- Bootstrap responsive 2-column grid -->
+      <div class="row g-4 align-items-start">
+
+        <!-- LEFT COLUMN: Input Form -->
+        <div class="col-12 col-md-6">
+          <div class="card p-4">
+            <h2 class="card-title fs-5 mb-4">Your Details</h2>
+
+            <form id="bmi-form" novalidate>
+
+              <!-- Unit selector -->
+              <div class="mb-3">
+                <label class="form-label" for="unit-select">UNIT SYSTEM</label>
+                <select class="form-select" id="unit-select">
+                  <option value="metric">Metric (cm, kg)</option>
+                  <option value="imperial">Imperial (ft/in, lbs)</option>
+                </select>
+              </div>
+
+              <!-- Height: Metric -->
+              <div class="mb-3" id="height-metric">
+                <label class="form-label" for="height-cm">HEIGHT (cm)</label>
+                <input type="number" class="form-control" id="height-cm"
+                       placeholder="e.g. 175" min="50" max="300" />
+              </div>
+
+              <!-- Height: Imperial (hidden by default) -->
+              <div class="mb-3 d-none" id="height-imperial">
+                <label class="form-label">HEIGHT</label>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <input type="number" class="form-control" id="height-ft"
+                           placeholder="feet" min="1" max="9" />
+                  </div>
+                  <div class="col-6">
+                    <input type="number" class="form-control" id="height-in"
+                           placeholder="inches" min="0" max="11" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Weight: Metric -->
+              <div class="mb-3" id="weight-metric">
+                <label class="form-label" for="weight-kg">WEIGHT (kg)</label>
+                <input type="number" class="form-control" id="weight-kg"
+                       placeholder="e.g. 70" min="1" max="500" />
+              </div>
+
+              <!-- Weight: Imperial (hidden by default) -->
+              <div class="mb-3 d-none" id="weight-imperial">
+                <label class="form-label" for="weight-lbs">WEIGHT (lbs)</label>
+                <input type="number" class="form-control" id="weight-lbs"
+                       placeholder="e.g. 154" min="1" max="1100" />
+              </div>
+
+              <!-- Age -->
+              <div class="mb-4">
+                <label class="form-label" for="age">AGE (optional)</label>
+                <input type="number" class="form-control" id="age"
+                       placeholder="e.g. 22" min="1" max="120" />
+              </div>
+
+              <!-- Error message (shown by JS) -->
+              <p id="error-msg" class="text-danger small mb-3" style="display:none"></p>
+
+              <!-- Action buttons -->
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-calc" onclick="calculateBMI()">
+                  Calculate BMI
+                </button>
+                <button type="button" class="btn btn-reset" onclick="resetForm()">
+                  Reset
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Result -->
+        <div class="col-12 col-md-6">
+
+          <!-- Result panel (hidden until JS calculates) -->
+          <div id="result-box">
+            <div class="d-flex gap-3 mb-3">
+              <div>
+                <div id="bmi-value">—</div>
+                <div id="bmi-label" class="text-muted">Your BMI</div>
+              </div>
+            </div>
+
+            <!-- Animated colour scale bar -->
+            <div class="scale-bar">
+              <div class="scale-marker" id="scale-marker" style="left:0%"></div>
+            </div>
+            <div class="scale-labels">
+              <span>Underweight</span>
+              <span>Normal</span>
+              <span>Overweight</span>
+              <span>Obese</span>
+            </div>
+
+            <!-- Health advice text -->
+            <p id="advice-text" class="mt-3 mb-0"></p>
+          </div>
+
+          <!-- Placeholder before calculation -->
+          <div id="result-placeholder" class="card p-4 text-center"
+               style="border-style:dashed;">
+            <p style="color:var(--muted); margin:0;">
+              Fill in your details and press
+              <strong style="color:var(--text)">Calculate BMI</strong>
+              to see your result here.
+            </p>
+          </div>
+
+        </div>
+      </div><!-- /row -->
+    </div>
+  </main>
+
+  <!-- ════════════════════════════════
+       SECTION — semantic HTML tag
+  ════════════════════════════════ -->
+  <section class="py-5" id="reference">
+    <div class="container">
+      <h2 class="mb-1">BMI Reference Chart</h2>
+      <p class="mb-4" style="color:var(--muted);">
+        Standard WHO BMI classifications for adults.
+      </p>
+
+      <!-- Bootstrap responsive table -->
+      <div class="table-responsive">
+        <table class="table table-dark table-bordered bmi-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>BMI Range</th>
+              <th>Health Risk</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-underweight">Underweight</td>
+              <td>&lt; 18.5</td>
+              <td>Malnutrition risk</td>
+            </tr>
+            <tr>
+              <td class="col-normal">Normal weight</td>
+              <td>18.5 – 24.9</td>
+              <td>Low risk</td>
+            </tr>
+            <tr>
+              <td class="col-overweight">Overweight</td>
+              <td>25 – 29.9</td>
+              <td>Moderate risk</td>
+            </tr>
+            <tr>
+              <td class="col-obese1">Obese Class I</td>
+              <td>30 – 34.9</td>
+              <td>High risk</td>
+            </tr>
+            <tr>
+              <td class="col-obese2">Obese Class II+</td>
+              <td>≥ 35</td>
+              <td>Very high risk</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════
+       FOOTER — semantic HTML tag
+  ════════════════════════════════ -->
+  <footer>
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <span>© 2025 HealthCalc — Built for CET138 Full Stack Development Assignment Project</span>
+      <span>HTML · CSS · Bootstrap 5 · JavaScript</span>
+    </div>
+  </footer>
+
+  <!-- 3. Bootstrap JS bundle (bootstrap.js) -->
+  <script src="bootstrap.js"></script>
+
+  <!-- 4. Your JavaScript (script.js) -->
+  <script src="script.js"></script>
+
+</body>
+</html>
